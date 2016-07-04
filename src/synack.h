@@ -14,32 +14,39 @@
 class Message;
 class Radio;
 
-typedef void (*messageHandler)(Message message);
-typedef void (*failureHandler)(int reason);
+enum FailureReason {SYNACK_SEND_ERROR, SYNACK_TIMEOUT};
+
+typedef void (*MessageHandler)(Message *message);
+typedef void (*FailureHandler)(FailureReason reason);
 
 class Message {
 private:
-    String _body;
-    volatile messageHandler _succeed;
-    volatile failureHandler _fail;
+    String *_body;
+    volatile MessageHandler _succeed = NULL;
+    volatile FailureHandler _fail = NULL;
 
 public:
     Message(String body);
     Message(const char *body);
+    ~Message() {
+        delete _body;
+        _succeed = NULL;
+        _fail = NULL;
+    }
 
     String getBody();
 
-    void then(messageHandler successHandler);
-    void then(messageHandler successHandler, failureHandler failHandler);
+    void then(MessageHandler successHandler);
+    void then(MessageHandler successHandler, FailureHandler failHandler);
 
     void succeed();
-    void fail(int reason);
+    void fail(FailureReason reason);
 };
 
 class Radio {
 public:
-    virtual boolean send(Message message);
-    virtual boolean listen(messageHandler handler);
+    virtual boolean send(Message *message);
+    virtual boolean listen(MessageHandler handler);
     virtual boolean stopListening();
     virtual boolean isListening();
     virtual void tick();

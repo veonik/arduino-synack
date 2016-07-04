@@ -10,20 +10,17 @@ private:
     byte _syncWord[2] = {199, 10};
     boolean _listening;
     boolean _packetWaiting;
-    messageHandler _handler;
+    MessageHandler _handler;
 
     boolean pauseListening();
     boolean resumeListening();
-
-    void readLQI();
-    void readRSSI();
 
 public:
     CC1101Radio();
     void interrupt();
 
-    boolean send(Message message);
-    boolean listen(messageHandler handler);
+    boolean send(Message *message);
+    boolean listen(MessageHandler handler);
     boolean stopListening();
     boolean isListening();
     void tick();

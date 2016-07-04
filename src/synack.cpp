@@ -1,34 +1,34 @@
 #include "synack.h"
 
 Message::Message(const char *body) {
-    _body = body;
+    _body = new String(body);
 }
 
 Message::Message(String body) {
-    _body = body;
+    _body = new String(body);
 }
 
 String Message::getBody() {
-    return _body;
+    return *_body;
 }
 
-void Message::then(messageHandler successHandler) {
+void Message::then(MessageHandler successHandler) {
     then(successHandler, NULL);
 }
 
-void Message::then(messageHandler successHandler, failureHandler failHandler) {
+void Message::then(MessageHandler successHandler, FailureHandler failHandler) {
     _succeed = successHandler;
     _fail = failHandler;
 }
 
 void Message::succeed() {
-    if (_succeed) {
-        _succeed(*this);
+    if (_succeed != NULL) {
+        _succeed(this);
     }
 }
 
-void Message::fail(int reason) {
-    if (_fail) {
+void Message::fail(FailureReason reason) {
+    if (_fail != NULL) {
         _fail(reason);
     }
 }
