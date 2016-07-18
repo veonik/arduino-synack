@@ -94,7 +94,7 @@ boolean CC1101Radio::stopListening() {
 }
 
 boolean CC1101Radio::pauseListening() {
-    detachInterrupt(0);
+    detachInterrupt(CC1101Interrupt);
     _listening = false;
     return true;
 }
@@ -104,7 +104,7 @@ void CC1101Radio::interrupt(void) {
 }
 
 boolean CC1101Radio::resumeListening() {
-    attachInterrupt(0, getInterruptFunc(this, 0), FALLING);
+    attachInterrupt(CC1101Interrupt, getInterruptFunc(this, 0), FALLING);
     _listening = true;
     return true;
 }
@@ -113,7 +113,6 @@ boolean CC1101Radio::isListening() {
     return _listening;
 }
 
-#ifdef DEBUG
 // Get signal strength indicator in dBm.
 // See: http://www.ti.com/lit/an/swra114d/swra114d.pdf
 int rssi(char raw) {
@@ -127,6 +126,7 @@ int rssi(char raw) {
         return (rssi_dec / 2) - rssi_offset;
 }
 
+#ifdef DEBUG
 // Get link quality indicator.
 int lqi(char raw) {
     return 0x3F - raw;
@@ -157,6 +157,7 @@ void CC1101Radio::tick() {
 #endif
                 if (_handler) {
                     Message msg = packetToMessage(packet);
+                    msg.rssi = rssi(packet.rssi);
                     _handler(&msg);
                 }
             }
@@ -165,6 +166,7 @@ void CC1101Radio::tick() {
         resumeListening();
     }
 }
+
 
 
 

@@ -26,6 +26,8 @@ private:
     volatile FailureHandler _fail = NULL;
 
 public:
+    int rssi = 0;
+
     Message(String body);
     Message(const char *body);
     ~Message() {
