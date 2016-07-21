@@ -34,7 +34,7 @@ CC1101Radio::CC1101Radio() {
     // TODO: addresses and channels
     _radio.disableAddressCheck();
     // TODO: transmission power customization
-    _radio.setTxPowerAmp(PA_LowPower);
+    _radio.setTxPowerAmp(PA_LongDistance);
 
     debug(F("CC1101_PARTNUM "));
     debugln(_radio.readReg(CC1101_PARTNUM, CC1101_STATUS_REGISTER));
@@ -43,27 +43,19 @@ CC1101Radio::CC1101Radio() {
     debug(F("CC1101_MARCSTATE "));
     debugln(_radio.readReg(CC1101_MARCSTATE, CC1101_STATUS_REGISTER) & 0x1f);
 
-    debugln("CC1101 radio initialized.");
+    debugln(F("CC1101 radio initialized."));
     resumeListening();
 }
 
 CCPACKET messageToPacket(Message *message) {
     CCPACKET packet;
-    String body = message->getBody();
-    packet.length = body.length();
-    for (int i = 0; i < packet.length; i++) {
-        packet.data[i] = (unsigned char) body[i];
-    }
+    packet.length = (unsigned char) message->size;
+    memcpy(&packet.data, message->getBody(), packet.length);
     return packet;
 }
 
 Message packetToMessage(CCPACKET packet) {
-    char body[packet.length+1];
-    for (int i = 0; i < packet.length; i++) {
-        body[i] = (char) packet.data[i];
-    }
-    body[packet.length] = 0;
-    return Message(body);
+    return Message((char *)packet.data, packet.length);
 }
 
 boolean CC1101Radio::send(Message *message) {

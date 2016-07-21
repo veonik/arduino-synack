@@ -21,22 +21,23 @@ typedef void (*FailureHandler)(FailureReason reason);
 
 class Message {
 private:
-    String *_body;
+    char _body[60];
     volatile MessageHandler _succeed = NULL;
     volatile FailureHandler _fail = NULL;
 
 public:
     int rssi = 0;
+    size_t size = 0;
 
-    Message(String body);
-    Message(const char *body);
+    Message(const char *body, size_t size);
+    Message(const char *body) : Message(body, strlen(body)) { }
+    Message(String body) : Message(body.c_str(), body.length()) { }
     ~Message() {
-        delete _body;
         _succeed = NULL;
         _fail = NULL;
     }
 
-    String getBody();
+    const char *getBody();
 
     void then(MessageHandler successHandler);
     void then(MessageHandler successHandler, FailureHandler failHandler);

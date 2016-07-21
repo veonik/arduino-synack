@@ -1,15 +1,12 @@
 #include "synack.h"
 
-Message::Message(const char *body) {
-    _body = new String(body);
+Message::Message(const char *body, size_t siz) {
+    memcpy(_body, body, siz);
+    size = siz;
 }
 
-Message::Message(String body) {
-    _body = new String(body);
-}
-
-String Message::getBody() {
-    return *_body;
+const char *Message::getBody() {
+    return _body;
 }
 
 void Message::then(MessageHandler successHandler) {
