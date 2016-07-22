@@ -14,21 +14,21 @@ class CC1101Radio : public Radio {
 private:
     CC1101 _radio;
     byte _syncWord[2] = {199, 10};
-    boolean _listening;
-    boolean _packetWaiting;
+    bool _listening;
+    bool _packetWaiting;
     MessageHandler _handler;
 
-    boolean pauseListening();
-    boolean resumeListening();
+    bool pauseListening();
+    bool resumeListening();
 
 public:
     CC1101Radio();
     void interrupt();
 
-    boolean send(Message *message);
-    boolean listen(MessageHandler handler);
-    boolean stopListening();
-    boolean isListening();
+    bool send(Message *message);
+    bool listen(MessageHandler handler);
+    bool stopListening();
+    bool isListening();
     void tick();
 
 };

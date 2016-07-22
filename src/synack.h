@@ -3,7 +3,7 @@
 
 #include <Arduino.h>
 
-#ifdef DEBUG
+#ifdef SYNACK_DEBUG
 #define debug(message) Serial.print(message);
 #define debugln(message) Serial.println(message);
 #else
@@ -48,10 +48,10 @@ public:
 
 class Radio {
 public:
-    virtual boolean send(Message *message);
-    virtual boolean listen(MessageHandler handler);
-    virtual boolean stopListening();
-    virtual boolean isListening();
+    virtual bool send(Message *message);
+    virtual bool listen(MessageHandler handler);
+    virtual bool stopListening();
+    virtual bool isListening();
     virtual void tick();
 };
 

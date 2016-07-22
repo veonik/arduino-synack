@@ -58,8 +58,8 @@ Message packetToMessage(CCPACKET packet) {
     return Message((char *)packet.data, packet.length);
 }
 
-boolean CC1101Radio::send(Message *message) {
-    boolean res;
+bool CC1101Radio::send(Message *message) {
+    bool res;
     if (isListening()) {
         pauseListening();
         res = _radio.sendData(messageToPacket(message));
@@ -75,17 +75,17 @@ boolean CC1101Radio::send(Message *message) {
     return res;
 }
 
-boolean CC1101Radio::listen(MessageHandler handler) {
+bool CC1101Radio::listen(MessageHandler handler) {
     _handler = handler;
     return resumeListening();
 }
 
-boolean CC1101Radio::stopListening() {
+bool CC1101Radio::stopListening() {
     _handler = NULL;
     return pauseListening();
 }
 
-boolean CC1101Radio::pauseListening() {
+bool CC1101Radio::pauseListening() {
     detachInterrupt(CC1101Interrupt);
     _listening = false;
     return true;
@@ -95,13 +95,13 @@ void CC1101Radio::interrupt(void) {
     _packetWaiting = true;
 }
 
-boolean CC1101Radio::resumeListening() {
+bool CC1101Radio::resumeListening() {
     attachInterrupt(CC1101Interrupt, getInterruptFunc(this, 0), FALLING);
     _listening = true;
     return true;
 }
 
-boolean CC1101Radio::isListening() {
+bool CC1101Radio::isListening() {
     return _listening;
 }
 
@@ -118,7 +118,7 @@ int rssi(char raw) {
         return (rssi_dec / 2) - rssi_offset;
 }
 
-#ifdef DEBUG
+#ifdef SYNACK_DEBUG
 // Get link quality indicator.
 int lqi(char raw) {
     return 0x3F - raw;
@@ -132,7 +132,7 @@ void CC1101Radio::tick() {
 
         CCPACKET packet;
         if (_radio.receiveData(&packet) > 0) {
-#ifdef DEBUG
+#ifdef SYNACK_DEBUG
             if (!packet.crc_ok) {
                 debugln("crc not ok");
             }
@@ -143,7 +143,7 @@ void CC1101Radio::tick() {
             debugln(F("dBm"));
 #endif
             if (packet.crc_ok && packet.length > 0) {
-#ifdef DEBUG
+#ifdef SYNACK_DEBUG
                 debug(F("packet: len "));
                 debugln(packet.length);
 #endif
