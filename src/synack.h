@@ -48,11 +48,11 @@ public:
 
 class Radio {
 public:
-    virtual bool send(Message *message);
-    virtual bool listen(MessageHandler handler);
-    virtual bool stopListening();
-    virtual bool isListening();
-    virtual void tick();
+    virtual bool send(Message *message) = 0;
+    virtual bool listen(MessageHandler handler) = 0;
+    virtual bool stopListening() = 0;
+    virtual bool isListening() = 0;
+    virtual void tick() = 0;
 };
 
 
