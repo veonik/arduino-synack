@@ -6,6 +6,9 @@
 
 #if defined(__AVR_ATmega2560__) || defined(__AVR_ATmega1280__)
 #define CC1101Interrupt 4 // Pin 19
+#elif defined(__MK64FX512__)
+// Teensy 3.5
+#define CC1101Interrupt 9 // Pin 9
 #else
 #define CC1101Interrupt 0 // Pin 2
 #endif
